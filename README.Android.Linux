@@ -1,0 +1,75 @@
+# Raylib + Android Sample for Linux
+
+## Setup
+
+1. Clone this repository
+
+2. cd <repo-name>
+
+3. git clone https://github.com/raysan5/raylib # clone raylib as a subdirectory
+
+4. cd raylib/src
+
+5. make PLATFORM=PLATFORM_ANDROID # to make libraylib.a
+
+6. cd ../..
+
+7. create subdirectory named android-sdk
+
+8. download android commandslinetools from: https://developer.android.com/studio#command-tools
+
+9. verify checksum and unzip within android-sdk -- so there should be a cmdline-tools subdir of android-sdk
+
+10. download latest java 8 lts from: https://www.azul.com/downloads/?os=linux&architecture=x86-64-bit&package=jdk&show-old-builds=true
+
+    example file name of downloaded file: zulu8.60.0.21-ca-jdk8.0.322-linux_x64.tar.gz
+
+    if a different version is obtained (the name will be different then), the
+    file env-setup.sh (which gets created in a step below) needs to be edited
+    to have a value different than zulu8.60.0.21-ca-jdk8.0.322 in it
+
+11. verify checksum and uncompress so it's a sibling directory of android-sdk
+
+12. create env-setup.sh with following content:
+
+export JAVA_HOME=$(pwd)/zulu8.60.0.21-ca-jdk8.0.322-linux_x64
+export ANDROID_SDK_ROOT=$(pwd)/android-sdk
+# XXX: ANDROID_HOME has been deprecated in favor of ANDROID_SDK_ROOT
+export ANDROID_HOME=
+export ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/21.4.7075529
+
+13. source env-setup.sh # in the directory it's in to set env vars appropriately
+
+14. confirm directory structure looks like:
+
+android-sdk                            # created in steps above
+CONVENTIONS.md
+env-setup.sh                           # created in steps above
+LICENSE
+raylib                                 # cloned in steps above
+README.Android.Linux                   # the current file
+README.md
+screenshots
+src
+zulu8.60.0.21-ca-jdk8.0.322-linux_x64  # uncompressed in steps above
+
+15. install some android bits as follows - may need to answer questions after some/all of them:
+
+sdkmanager --sdk_root=$ANDROID_SDK_ROOT --install platform-tools
+sdkmanager --sdk_root=$ANDROID_SDK_ROOT --install "platforms;android-29"
+sdkmanager --sdk_root=$ANDROID_SDK_ROOT --install "build-tools;29.0.3"
+sdkmanager --sdk_root=$ANDROID_SDK_ROOT --install "ndk;21.4.7075529"
+
+not sure if the following is necessary (did it on windows, but not linux, though in linux
+had android-udev package installed in arch derivative distribution)
+
+sdkmanager.bat --sdk_root=$ANDROID_SDK_ROOT --install "extras;google;usb_driver"
+
+16. cd src
+
+17. make PLATFORM=PLATFORM_ANDROID # to build apk
+
+18. make PLATFORM=PLATFORM_ANDROID install # to deploy apk to already connected android device
+
+19. make PLATFORM=PLATFORM_ANDROID clean # do this before subsequent builds
+

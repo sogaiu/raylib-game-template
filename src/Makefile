@@ -175,7 +175,9 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     endif
 endif
 ifeq ($(PLATFORM),PLATFORM_ANDROID)
-    MAKE = mingw32-make
+    ifeq ($(OS),Windows_NT)
+        MAKE = mingw32-make
+    endif
 endif
 
 # Define compiler flags: CFLAGS
@@ -388,7 +390,14 @@ OBJS = $(patsubst %.c, %.o, $(PROJECT_SOURCE_FILES))
 #------------------------------------------------------------------------------------------------
 # For Android platform we call a custom Makefile.Android
 ifeq ($(PLATFORM),PLATFORM_ANDROID)
-    MAKEFILE_PARAMS = -f Makefile.Android
+    ifeq ($(OS),Windows_NT)
+        MAKEFILE_PARAMS = -f Makefile.Android
+    else
+        UNAMEOS = $(shell uname)
+        ifeq ($(UNAMEOS),Linux)
+            MAKEFILE_PARAMS = -f Makefile.Android.Linux
+        endif
+    endif
     export PROJECT_NAME
     export PROJECT_SOURCE_FILES
 else
@@ -435,5 +444,12 @@ endif
 ifeq ($(PLATFORM),PLATFORM_WEB)
 	del *.o *.html *.js
 endif
+ifeq ($(PLATFORM),PLATFORM_ANDROID)
+	$(MAKE) $(MAKEFILE_PARAMS) clean
+endif
 	@echo Cleaning done
 
+install:
+ifeq ($(PLATFORM),PLATFORM_ANDROID)
+	$(MAKE) $(MAKEFILE_PARAMS) install
+endif
